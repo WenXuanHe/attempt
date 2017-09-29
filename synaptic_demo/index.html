@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Synaptic</title>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.2/synaptic.js"></script>
+    <script>
+    var train = [
+        { name: 'workout', duration: '120', enjoy: true, time: 1455063275, tags: ['gym', 'weights'] },
+        { name: 'lunch', duration: '45', enjoy: false, time: 1455063275, tags: ['salad', 'wine'] },
+        { name: 'sleep', duration: '420', enjoy: true, time: 1455063275, tags: ['bed', 'romance'] },
+        { name: 'touch', duration: '880', enjoy: true, time: 1455063275, tags: ['qq', 'ww'] }
+    ];
+
+    var buildBit = i => (1 << i).toString(2);
+    var completeBit = (item, len) => "0".repeat(len).concat(item).slice(-len).split('');
+    var duration = denominator => duration => (+duration / denominator);
+    var enjoys = (train) => train.map(item => [Number(item.enjoy)]);
+
+    var concatBit = (bits) => {
+        var result = 0;
+        bits.forEach(item => { result = result | item} );
+        return result;
+    }
+    var build = (buildBit, completeBit, duration, buildTags) => {
+        return (train, len) =>
+            train.map((item, i) =>
+                completeBit(buildBit(i), len)
+                .concat(duration(item.duration))
+                .concat(buildTags(item.tags, item.tags.length * len)));
+    }
+
+    var buildTags = function(buildBit, completeBit, concatBit) {
+        var index = 0;
+        var createTagBit = (tags) => tags.map(() => {
+            index++;
+            return 1 << (index - 1);
+        })
+        return (tags, len) => {
+            return completeBit(concatBit(createTagBit(tags)).toString(2), len);
+        }
+    }
+
+    var result = build(buildBit, completeBit, duration(1000), buildTags(buildBit, completeBit, concatBit));
+    var inputs = result(train, train.length);
+    var trainingSet  = function (inputs, enjoys) {
+        return inputs.map((item, i) => ({
+            input: item.map(it => +it),
+            output: enjoys[i]
+        }));
+    }
+    var set = trainingSet(inputs, enjoys(train));
+    var myNet = new synaptic.Architect.Perceptron(set[0].input.length, 7, 1);
+    var trainer = new synaptic.Trainer(myNet);
+    var trainingOptions = {
+      rate: .1,
+      iterations: 20000,
+      error: .05,
+    }
+    trainer.train(set, trainingOptions);
+
+    console.log(myNet.activate([0, 0, 0, 1, 0.1, 0, 0, 0, 0, 0, 0, 1, 1]));
+
+    </script>
+</body>
+
+</html>
