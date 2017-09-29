@@ -1,0 +1,62 @@
+@supports (display: grid) {
+    .grid {
+        height: 500px;
+        border: 1px solid;
+        /*grid 占满一整行*/
+        display: grid;
+        /*inline-grid不占满整行*/
+        /*display: inline-grid;*/
+        /*//有几个值定义几列*/
+        grid-template-rows: 1fr 1fr 1fr;
+        /*定义几行，没行的宽度*/
+        grid-template-columns: 1fr 2fr 1fr;
+        /*定义间距*/
+        grid-gap: 20px 30px;
+
+        grid-auto-flow: column;
+
+        grid-template-areas:
+            "header header  header"
+            "leftSide content aside"
+            "leftSide footer footer";
+    }
+
+    .grid .item {
+        background: #D94A6A;
+        border: 1px solid;
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .item:nth-child(1){
+        grid-area:header;
+        background: hsla(0, 100%, 50%, 1);
+    }
+    .item:nth-child(2){
+        grid-area:leftSide;
+        background: hsla(120, 100%, 50%, .5);
+    }
+    .item:nth-child(3){
+        grid-area:content;
+        background: hsla(240, 60%, 60%, .5);
+    }
+    .item:nth-child(4){
+        grid-area:aside;
+        background: hsla(160, 50%, 50%, .5);
+    }
+    .item:nth-child(5){
+        grid-area:footer;
+        background: hsla(180, 50%, 50%, .5);
+    }
+    /*.item7{*/
+      /*  grid-row-start: 2;
+        grid-row-end: 3;
+        grid-column-start: 2;
+        grid-column-end: 3;*/
+        /*grid-area:2/2/3/4;*/
+        /*order:1;*/
+    /*}*/
+
+}
