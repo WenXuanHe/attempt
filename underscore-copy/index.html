@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="text/javascript" src="./js/underscore.js"></script>
+	<script>
+		var compiled = _.template("<ul><li><%=name%></li><li><%time%></li><li><%-age%></li></ul>", {
+                        evaluate    : /<%([\s\S]+?)%>/g,
+                        interpolate : /<%=([\s\S]+?)%>/g,
+                        escape      : /<%-([\s\S]+?)%>/g,
+                        variable: 'name, age, time'
+                      });
+		console.log(compiled.source);
+
+
+            // function(obj){
+            //     var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+            //     with(obj||{}){
+            //         __p+='<ul><li>'+
+            //              ((__t=(name))==null?'':__t)+
+            //             '</li><li>';
+            //                 time
+            //             __p+='</li><li>'+
+            //                 ((__t=(time))==null?'':_.escape(__t))+
+            //                 '</li></ul>';
+            //     }
+            //     return __p;
+            //     }
+	</script>
+</body>
+
+</html>
