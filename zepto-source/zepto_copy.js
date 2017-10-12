@@ -382,6 +382,7 @@
 
                 if (window.JSON) $.parseJSON = JSON.parse
 
+
                 $.fn = {
                         constructor: zepto.Z,
                         length: 0,
@@ -472,5 +473,99 @@
 
                     eq: function(idx) {
                         return idx === -1 ? this.slice(idx) : this.slice(idx, +idx + 1)
-                    })();
+                    },
+                };
+
+                function traverseNode(node, fun) {
+                  fun(node)
+                  for (var i = 0, len = node.childNodes.length; i < len; i++)
+                    traverseNode(node.childNodes[i], fun)
+                }
+
+                // ['after', 'prepend', 'before', 'append']
+                adjacencyOperators.forEach(function(operator, operatorIndex){
+                    var inside = operatorIndex % 2; // -> true : 'prepend', 'apppend'; false -> 'after', 'before'
+                    $.fn[operator] = function () {
+                        // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
+                        var argType, nodes = $.map(arguments, function (arg) {
+                            var arr = [],
+                            argType = type(arg)
+                            if(argType === "array"){
+                                arg.forEach(function (el) {
+                                    // 元素加到arr中
+                                    if(el.nodeType !== undefined) arr.push(el)
+                                    else if($.zepto.isZ(el))  arr = arr.concat(el.get())
+                                    else arr = arr.concat(zepto.fragment(el))
+                                });
+                                return arr;
+                            }
+
+                            return argType === 'object' || arg === null ? arg :  zepto.fragment(arg)
+                        }),
+                        parent, copyByClone = this.length > 1
+
+                        if(nodes.length < 1) return this
+
+                        return this.each(function (_, target) {
+                            //inside 为true时，是增加在target的内部，parent为target
+                            parent = inside ? target : target.parentNode
+
+                            // 全部使用insertBefore模拟
+                            target = inside === 0 ? target.nextSibling :
+                            inside === 1 ? target.firstChild :
+                            inside === 2 ? target : null;
+                            // 判断parent是否存在于document之中
+                            var parentInDocument = $.contains(document.documentElement, parent);
+
+                            nodes.forEach(function (node) {
+                                // insertBefore时复制的是引用，为了避免出现闭包问题，深复制node节点
+                                if(copyByClone) node = node.cloneNode(true)
+                                else if (!parent) return $(node).remove()
+
+                                parent.insertBefore(node, target)
+
+                                if(parentInDocument) {
+                                    traverseNode(node, function (el) {
+                                        if (el.nodeName != null && el.nodeName.toUpperCase() === 'SCRIPT' &&
+                                              (!el.type || el.type === 'text/javascript') && !el.src) {
+                                            // script 动态编译执行
+                                            var target = el.ownerDocument ? el.ownerDocument.defaultView : window
+                                            target['eval'].call(target, el.innerHTML)
+                                          }
+                                    })
+                                }
+                            })
+                        })
+                    }
+
+                    $.fn[inside ? operator + 'To' : 'insert' + (operatorIndex ? 'Before' : 'After')] = function(html) {
+                      $(html)[operator](this)
+                      return this
+                }
+                });
+
+                // 缓存元素的默认display的值
+                function defaultDisplay(nodeName) {
+                    var element, display;
+                    if( !elementDisplay){
+                        // 创建节点得到display的值，再删除节点
+                        var el = document.createElement(nodeName);
+                        document.body.appendChild(el);
+                        display = getComputedStyle(element, '').getPropertyValue('display');
+                        el.parentNode.removeChild(el);
+                        display == "none" && (display = "block");
+                        return elementDisplay[nodeName] = display;
+                    }
+
+                    return elementDisplay[nodeName]
+                }
+
+                function className(node, value) {
+                    var klass = node.className || '',
+                  // 通过baseVal判断是否是SVG
+                  svg = klass && klass.baseVal !== undefined
+
+                if (value === undefined) return svg ? klass.baseVal : klass
+                svg ? (klass.baseVal = value) : (node.className = value)
+            }
         });
