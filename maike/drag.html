@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>drag</title>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            border: 1px solid red;
+        }
+
+        .container {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            border: 1px solid green;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            right: 0;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div id="box" class="box" draggable="true" ondragstart="drag(event)"> block A</div>
+
+    <div id="container" class="container" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+</body>
+
+<script>
+    var container = document.getElementById('container');
+    var box = document.getElementById('box');
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    requestAnimationFrame(function () {
+        container.style.top = Math.ceil(Math.random() * (windowHeight-300)) + "px";
+        container.style.left = Math.ceil(Math.random() * (windowWidth-300)) + "px";
+    });
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("Text", ev.target.id);
+    }
+
+    function drop(ev) {
+        var data = ev.dataTransfer.getData("Text");
+        ev.target.appendChild(document.getElementById(data));
+        ev.preventDefault();
+    }
+</script>
+
+</html>
