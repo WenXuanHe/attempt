@@ -18,19 +18,10 @@ var Node = function (data) {
 
 // 新增元素
 Node.prototype.add = function(data){
-    if(data > this.data){
-        if(this.right){
-            this.root.add.call(this.right, data);
-        }else{
-            this.right = new Tree(data, this.root);
-        }
-    }else {
-        if(this.left){
-            this.root.add.call(this.left, data);
-        }else{
-            this.left = new Tree(data, this.root);
-        }
-    }
+
+    var direct = data > this.data ? "right" : "left";
+    this[direct] ? this.root.add.call(this[direct], data) : (this[direct] = new Tree(data, this.root));
+    return this.root;
 }
 
 /**
@@ -92,11 +83,13 @@ Node.prototype.eachForfloor = function () {
  */
 Node.prototype.findEnds = function(){
     var arr = [];
-    this.eachForfirst(function(){
+    var pushItem = function(){
         if(!this.left && !this.right){
             arr.push(this);
         }
-    });
+    }
+
+    this.eachForfirst(pushItem);
 
     return arr;
 }
@@ -120,13 +113,13 @@ Node.prototype.getEveryParentData = function(nodes){
 }
 
 var root = new Node(7);
-root.add(4);
-root.add(2);
-root.add(5);
-root.add(9);
-root.add(8);
-root.add(13);
-root.add(25);
+root.add(4)
+    .add(2)
+    .add(5)
+    .add(9)
+    .add(8)
+    .add(13)
+    .add(25);
 
 var nodes = root.findEnds();
 var result = root.getEveryParentData(nodes);
