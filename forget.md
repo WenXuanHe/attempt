@@ -1,2 +1,2 @@
-# document.write
+### document.write
 文档流未关闭，直接写入页面；文档流关闭 重新打开文档流 覆盖写入。
