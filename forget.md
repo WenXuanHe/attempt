@@ -5,3 +5,8 @@
 var a=['12', '20'];
 a.map(Number);
 ```
+### ios系统下， flex:1 不会重新计算大小 
+不要用缩写的形式
+flex: 1;
+改成
+flex-grow: 1; 就行了
