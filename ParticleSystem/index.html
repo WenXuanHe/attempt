@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<!--shader代码-->
+
+<!--顶点着色器-->
+<script type="x-shader/x-vertex" id="vertexshader">
+    void main(){
+        gl_PointSize = 4;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(posotion, 1.0);
+    }
+</script>
+
+<!--片元着色器-->
+<script type="x-shader/x-fragment" id="fragmentshader">
+    uniform vec3 color;
+    viod main(){
+        gl_FragColor = vec4(color, ,1.0);
+    }
+</script>
+
+
+</body>
+</html>

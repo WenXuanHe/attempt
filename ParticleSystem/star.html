@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--shader代码-->
+<!--顶点着色器-->
+<script type="x-shader/x-vertex" id="vertexshader">
+    void main(){
+        gl_PointSize = 4;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(posotion, 1.0);
+    }
+</script>
+
+<!--片元着色器-->
+<script type="x-shader/x-fragment" id="fragmentshader">
+    uniform vec3 color;
+    viod main(){
+        gl_FragColor = vec4(color,1.0);
+    }
+</script>
+
+<script src="./lib/three.min.js"></script>
+<script src="./lib/tween.min.js"></script>
+<script src="./lib/stats.min.js"></script>
+<script src="./lib/FlyControls.js"></script>
+<script src="./lib/FBXLoader.js"></script>
+<script src="./lib/inflate.min.js"></script>
+<script src="./lib/MTLLoader.js"></script>
+<script src="./lib/OBJLoader.js"></script>
+<script src="./lib/OrbitControls.js"></script>
+<script src="./star.js?t=1"></script>
+</body>
+</html>
