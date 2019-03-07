@@ -24,15 +24,15 @@ export default (scene, renderer, camera, container) => {
   }
   // canvas容器内鼠标点击事件添加
   container.addEventListener("mousedown", (event) => {
-      handleRaycasters(event, (objTarget) => {
-          // 寻找其对应父级为场景下的直接子元素
-          let object = parentUtilScene(objTarget);
-          // 调用拾取到的物体的点击事件
-          object._click && object._click(event);
-          // 遍历场景中除当前拾取外的其他物体，执行其未被点击到的事件回调
-          scene.children.forEach((objItem) => {
-                  if (objItem !== object) {
-                  objItem._clickBack && objItem._clickBack();
+    handleRaycasters(event, (objTarget) => {
+        // 寻找其对应父级为场景下的直接子元素
+        let object = parentUtilScene(objTarget);
+        // 调用拾取到的物体的点击事件
+        object._click && object._click(event);
+        // 遍历场景中除当前拾取外的其他物体，执行其未被点击到的事件回调
+        scene.children.forEach((objItem) => {
+                if (objItem !== object) {
+                objItem._clickBack && objItem._clickBack();
               }
           });
       });

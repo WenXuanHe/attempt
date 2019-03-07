@@ -13,6 +13,7 @@ var module = {
   renderer: null,
   maxers:[],
   cameraPosition: [-100, -100, 50],
+  round: false,
   init(){
     var self = this
     // 获取浏览器窗口的宽高，后续会用
@@ -52,6 +53,7 @@ var module = {
     this.container = document.body;
     // 将渲染器的输出（此处是 canvas 元素）插入到 body
     this.container.appendChild(this.renderer.domElement)
+    // this.scene.add(new THREE.Mesh(new THREE.SphereGeometry(100, 100, 100), new THREE.MeshBasicMaterial(0x0000ff)))
     this.methods.addLight(this.scene)
     this.addListener = addMouseListener(this.scene, this.renderer, this.camera, this.container)
     // this.methods.addMesh(this.scene)
@@ -61,43 +63,58 @@ var module = {
       let gltfMesh = gltf.scene.children[ 0 ];
       // gltfMesh.scale(0.3, 0.3, 0.3);
       let scaleRate = 0.5;
+      let {x, y, z, theta, phi} = this.methods.getPosi();
       gltfMesh.scale.x = scaleRate
       gltfMesh.scale.y = scaleRate
       gltfMesh.scale.z = scaleRate
-      gltfMesh.position.y = 15;
+      console.log(x, y, z);
+      gltfMesh.position.x = x
+      gltfMesh.position.y = y
+      gltfMesh.position.z = z
+      gltfMesh.theta = theta
+      gltfMesh.phi = phi
       gltfMesh.rotation.y = - 1;
       gltfMesh.castShadow = true;
       gltfMesh.receiveShadow = true;
+      var box = new THREE.BoxHelper( gltfMesh, 0xffff00 );
+      gltfMesh.name="gltfMesh_bird"
       this.scene.add(gltfMesh);
+      this.scene.add(box);
       var mixer = new THREE.AnimationMixer(gltfMesh)
       let mixerAfter = mixer.clipAction(gltf.animations[0]).setDuration(1).play();
       this.maxers.push(mixer);
       this.addListener().then(() => {
         gltfMesh.on('click', () => {
           console.log('停止动画')
-          if(mixerAfter.__isStop){
-            mixerAfter.__isStop = false;
-            mixerAfter.reset();
-          }else{
-            mixerAfter.__isStop = true;
-            mixerAfter.stop();
-          }
+          // if(mixerAfter.__isStop){
+          //   mixerAfter.__isStop = false;
+          //   mixerAfter.reset();
+          // }else{
+          //   mixerAfter.__isStop = true;
+          //   mixerAfter.stop();
+          // }
+          this.round = true;
         })
       })
     })
 
     fbxLoader.load("../src/obj/bird.FBX", (mesh) => {
-      debugger;
+      
       var robot = mesh.children[0];
+      let {x, y, z} = this.methods.getPosi();
+      
       robot.scale.x = 0.01
       robot.scale.y = 0.01
       robot.scale.z = 0.01
       // bird.rotateX(-Math.PI / 2);
-      robot.position.y = 100;
-      robot.position.x = 100;
-      robot.position.z = 100;
+      robot.position.x = x;
+      robot.position.y = y;
+      robot.position.z = z;
       robot.rotation.y = - 1;
+
+      var box = new THREE.BoxHelper( robot, 0xffff00 );
       this.scene.add(robot);
+      this.scene.add(box);
     })
     var helper = new THREE.AxesHelper(10);
     this.scene.add(helper);
@@ -110,10 +127,34 @@ var module = {
         maxers.forEach((item) => {
           item.update(delta);
         })
+        
+        if(self.round){
+          let gltfMesh_bird = self.scene.children.find(item => item.name === 'gltfMesh_bird')
+          let theta1 = gltfMesh_bird.theta + 0.01
+          let {x, y, z, theta, phi} = self.methods.getPosi(theta1, gltfMesh_bird.phi)
+          console.log(x, y, z);
+          gltfMesh_bird.theta = theta
+          gltfMesh_bird.phi = phi
+          gltfMesh_bird.position.x = x
+          gltfMesh_bird.position.y = y
+          gltfMesh_bird.position.z = z
+        }
+
         requestAnimationFrame(render)
     }
   },
   methods: {
+    getPosi(theta, phi){
+      var radius = 100;
+      var theta = theta || (Math.random() * Math.PI * 2);
+      var phi = phi || (Math.random() * Math.PI);
+      var x = radius * Math.cos( theta ) * Math.sin( phi );
+			var z = radius * Math.cos( phi );
+      var y = radius * Math.sin( theta ) * Math.sin( phi );
+      return {
+        x, y, z, theta, phi
+      }
+    },
     // 添加光源
     addLight(scene){
       var light = new THREE.AmbientLight( 0x111111, 0.1)
