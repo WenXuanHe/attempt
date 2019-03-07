@@ -45,11 +45,11 @@ var module = {
     this.renderer.gammaOutput = true;
     // 初始化摄像机插件（用于拖拽旋转摄像机，产生交互效果）
     var orbitControls = new OrbitControls(this.camera)
-    orbitControls.autoRotate = true
-    orbitControls.addEventListener( 'change', render );
-    orbitControls.minDistance = 20;
-    orbitControls.maxDistance = 500;
-    orbitControls.enablePan = false;
+    // orbitControls.autoRotate = true
+    // orbitControls.addEventListener( 'change', render );
+    // orbitControls.minDistance = 20;
+    // orbitControls.maxDistance = 500;
+    // orbitControls.enablePan = false;
     this.container = document.body;
     // 将渲染器的输出（此处是 canvas 元素）插入到 body
     this.container.appendChild(this.renderer.domElement)
@@ -85,15 +85,7 @@ var module = {
       this.maxers.push(mixer);
       this.addListener().then(() => {
         gltfMesh.on('click', () => {
-          console.log('停止动画')
-          // if(mixerAfter.__isStop){
-          //   mixerAfter.__isStop = false;
-          //   mixerAfter.reset();
-          // }else{
-          //   mixerAfter.__isStop = true;
-          //   mixerAfter.stop();
-          // }
-          this.round = true;
+          this.round = !this.round;
         })
       })
     })
