@@ -14,7 +14,7 @@ class  WorldPoint{
         this.addMouseListener();
         // this.addObjs();
         // this.addObj1();
-        // this.addObjs2();
+        this.addObjs2();
         this.addObjs3();
         // this.initModel();
         // this.initControls();
@@ -112,15 +112,17 @@ class  WorldPoint{
 
     addObjs2(){
         this.loader(['obj/robot.fbx', 'obj/Guitar/Guitar.fbx']).then(result =>{
-            var robot = result[0].children[1].geometry;
-            var guitarObj = result[1].children[0].geometry;
-            // 放大1.5倍
-            guitarObj.scale(1.5, 1.5, 1.5)
-            guitarObj.rotateX(-Math.PI / 2);
-            robot.scale(0.08, 0.08, 0.08);
-            robot.rotateX(-Math.PI / 2);
+            // var robot = result[0].children[1].geometry;
+            // var guitarObj = result[1].children[0].geometry;
+            // // 放大1.5倍
+            // guitarObj.scale(1.5, 1.5, 1.5)
+            // guitarObj.rotateX(-Math.PI / 2);
+            // robot.scale(0.08, 0.08, 0.08);
+            // robot.rotateX(-Math.PI / 2);
 
-            this.addPartices(robot, guitarObj)
+            // this.addPartices(robot, guitarObj)
+            this.scene.add(result[0])
+            this.scene.add(result[1])
         })
     }
 

@@ -26,7 +26,7 @@ class  Base{
         this.addMouseListener();
         // this.addObjs();
         // this.addObj1();
-        // this.addObjs2();
+        this.addObjs2();
         this.addObjs3();
         // this.initModel();
         // this.initControls();
@@ -677,4 +677,4 @@ class  Base{
     }
 }
 
-new WorldPoint(document.querySelector("#world"));
+new Base(document.querySelector("#world"));

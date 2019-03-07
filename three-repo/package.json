@@ -1,0 +1,43 @@
+{
+  "name": "three-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack --config webpack.config.js -p"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^1.0.0",
+    "exports-loader": "^0.7.0",
+    "html-loader": "^0.5.5",
+    "script-loader": "^0.7.2",
+    "speed-measure-webpack-plugin": "^1.3.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.101.1",
+    "three-fbx-loader": "^1.0.3",
+    "three-gltf-loader": "^1.101.0",
+    "three-json-loader": "^1.0.0",
+    "three-mtl-loader": "^1.0.2",
+    "three-obj-loader": "^1.1.3",
+    "three-orbitcontrols": "^2.101.1"
+  },
+  "peerDependencies": {
+    "three": "^0.101.1"
+  }
+}
