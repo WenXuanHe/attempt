@@ -24,8 +24,7 @@ var module = {
     this.scene = new THREE.Scene()
     window.scene = this.scene;
     // 创建一个具有透视效果的摄像机
-    this.camera = new THREE.PerspectiveCamera(35, width / height, 1, 1000)
-    
+    this.camera = new THREE.PerspectiveCamera(35, width / height, 1, 10000)
     // 设置摄像机位置，并将其朝向场景中心
     this.camera.position.set(0, 0, 500)
     this.camera.lookAt(this.scene.position)
@@ -44,7 +43,7 @@ var module = {
     this.renderer.gammaInput = true;
     this.renderer.gammaOutput = true;
     // 初始化摄像机插件（用于拖拽旋转摄像机，产生交互效果）
-    var orbitControls = new OrbitControls(this.camera)
+    this.orbitControls = new OrbitControls(this.camera)
     // orbitControls.autoRotate = true
     // orbitControls.addEventListener( 'change', render );
     // orbitControls.minDistance = 20;
@@ -94,15 +93,39 @@ var module = {
       
       var robot = mesh.children[0];
       let {x, y, z} = this.methods.getPosi();
-      
-      robot.scale.x = 0.01
-      robot.scale.y = 0.01
-      robot.scale.z = 0.01
+      robot.scale.x = 0.08
+      robot.scale.y = 0.08
+      robot.scale.z = 0.08
       // bird.rotateX(-Math.PI / 2);
       robot.position.x = x;
       robot.position.y = y;
       robot.position.z = z;
       robot.rotation.y = - 1;
+
+      this.addListener().then(() => {
+        robot.on('click', () => {
+          // 1.得到这个robot的position数据，然后将camera设置为position
+          let xx = robot.position.x
+          let yy = robot.position.y
+          let zz = robot.position.z
+          // 得到robot的最大最小坐标，来计算大小，
+          robot.geometry.computeBoundingBox();
+          let sizeZ = robot.geometry.boundingBox.max.z - robot.geometry.boundingBox.min.z
+          // robot.geometry.center();  这个可以让物体居中
+          // robot.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-450, -300, 0));  这个可以以y轴和x轴移动
+          // 以动画的方式移动摄像机，物体的位置仍保持不变，之后再把摄像机看向robot
+          // 在点击的一瞬间会闪动，再看一下这个问题
+          TweenMax.to(this.camera.position, 1, {
+            x: xx ,
+            y: yy,
+            z: zz + sizeZ / 2,
+            ease:Expo.easeInOut,
+            onComplete:  () => {
+            } 
+          })
+          // this.camera.lookAt(xx, yy, zz)
+        })
+      })
 
       var box = new THREE.BoxHelper( robot, 0xffff00 );
       this.scene.add(robot);
@@ -116,6 +139,8 @@ var module = {
         var delta = self.clock.getDelta();
         // 渲染，即摄像机拍下此刻的场景
         self.renderer.render(self.scene, self.camera)
+        //更新摄像机的位置
+        self.orbitControls.update(delta);
         maxers.forEach((item) => {
           item.update(delta);
         })
