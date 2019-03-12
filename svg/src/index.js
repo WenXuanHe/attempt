@@ -6,23 +6,19 @@ var canPlay = false;
 
 let translateX = path('x')
 let translateY = path('y')
-translateX.svg.viewBox = translateX.svg.viewBox.map(item => item*2)
-translateY.svg.viewBox = translateY.svg.viewBox.map(item => item*2)
+let rate = window.outerWidth / 750
+translateX.svg.viewBox = translateX.svg.viewBox.map(item => (item / rate) + 5)
+translateY.svg.viewBox = translateY.svg.viewBox.map(item => (item / rate) + 5)
 var animation = anime({
   targets: '#root .el',
   translateX: translateX,
   translateY: translateY,
   rotate: path('angle'),
   easing: 'linear',
-  duration: 20000,
+  duration: 50000,
   // autoplay: false,
   update: function(anim) {
-    updates++;
-    console.log('progress : '+Math.round(anim.progress)+'%', 'updates : '+updates);
-    if([8, 30, 45, 60].indexOf(Math.round(anim.progress)) > -1 && !canPlay){
-      anim.pause()
-      canPlay = false;
-    }
+
   }
 });
 document.querySelector("#root .el").addEventListener('click', function(){

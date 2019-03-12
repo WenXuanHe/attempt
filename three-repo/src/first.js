@@ -60,13 +60,11 @@ var module = {
     loader.addGLTFModel("../Flamingo.glb")
     .then(gltf => {
       let gltfMesh = gltf.scene.children[ 0 ];
-      // gltfMesh.scale(0.3, 0.3, 0.3);
       let scaleRate = 0.5;
       let {x, y, z, theta, phi} = this.methods.getPosi();
       gltfMesh.scale.x = scaleRate
       gltfMesh.scale.y = scaleRate
       gltfMesh.scale.z = scaleRate
-      console.log(x, y, z);
       gltfMesh.position.x = x
       gltfMesh.position.y = y
       gltfMesh.position.z = z
@@ -80,7 +78,7 @@ var module = {
       this.scene.add(gltfMesh);
       this.scene.add(box);
       var mixer = new THREE.AnimationMixer(gltfMesh)
-      let mixerAfter = mixer.clipAction(gltf.animations[0]).setDuration(1).play();
+      mixer.clipAction(gltf.animations[0]).setDuration(1).play();
       this.maxers.push(mixer);
       this.addListener().then(() => {
         gltfMesh.on('click', () => {
@@ -104,26 +102,29 @@ var module = {
 
       this.addListener().then(() => {
         robot.on('click', () => {
-          // 1.得到这个robot的position数据，然后将camera设置为position
-          let xx = robot.position.x
-          let yy = robot.position.y
-          let zz = robot.position.z
-          // 得到robot的最大最小坐标，来计算大小，
-          robot.geometry.computeBoundingBox();
-          let sizeZ = robot.geometry.boundingBox.max.z - robot.geometry.boundingBox.min.z
-          // robot.geometry.center();  这个可以让物体居中
-          // robot.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-450, -300, 0));  这个可以以y轴和x轴移动
-          // 以动画的方式移动摄像机，物体的位置仍保持不变，之后再把摄像机看向robot
-          // 在点击的一瞬间会闪动，再看一下这个问题
-          TweenMax.to(this.camera.position, 1, {
-            x: xx ,
-            y: yy,
-            z: zz + sizeZ / 2,
-            ease:Expo.easeInOut,
-            onComplete:  () => {
-            } 
-          })
-          // this.camera.lookAt(xx, yy, zz)
+          if(!robot.isClicked){
+            robot.isClicked = true;
+            // 1.得到这个robot的position数据，然后将camera设置为position
+            let xx = robot.position.x
+            let yy = robot.position.y
+            let zz = robot.position.z
+            // 得到robot的最大最小坐标，来计算大小，
+            robot.geometry.computeBoundingBox();
+            let sizeZ = robot.geometry.boundingBox.max.z - robot.geometry.boundingBox.min.z
+            // robot.geometry.center();  这个可以让物体居中
+            // robot.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-450, -300, 0));  这个可以以y轴和x轴移动
+            // 以动画的方式移动摄像机，物体的位置仍保持不变，之后再把摄像机看向robot
+            // 在点击的一瞬间会闪动，再看一下这个问题, 去掉lookAt方法就可以解决
+            TweenMax.to(this.camera.position, 1, {
+              x: xx ,
+              y: yy,
+              z: zz + sizeZ / 2,
+              ease:Expo.easeInOut,
+              onComplete:  () => {
+                robot.isClicked = false;
+              } 
+            })
+          }
         })
       })
 
@@ -146,10 +147,10 @@ var module = {
         })
         
         if(self.round){
+          
           let gltfMesh_bird = self.scene.children.find(item => item.name === 'gltfMesh_bird')
           let theta1 = gltfMesh_bird.theta + 0.01
           let {x, y, z, theta, phi} = self.methods.getPosi(theta1, gltfMesh_bird.phi)
-          console.log(x, y, z);
           gltfMesh_bird.theta = theta
           gltfMesh_bird.phi = phi
           gltfMesh_bird.position.x = x
@@ -162,6 +163,7 @@ var module = {
   },
   methods: {
     getPosi(theta, phi){
+      // 球体表面的3维向量
       var radius = 100;
       var theta = theta || (Math.random() * Math.PI * 2);
       var phi = phi || (Math.random() * Math.PI);

@@ -60,5 +60,6 @@ module.exports = smp.wrap({
     externals: [],
     devServer: {
         historyApiFallback: true,
+        host: '0.0.0.0'
     }
 })

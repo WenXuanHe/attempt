@@ -14,12 +14,12 @@
     background-color: transparent;
     color: rgb(132, 83, 223);
 }
-input.progress {
-    cursor: ew-resize;
-}
-input {
-    margin-left: 10px;
-}
+    input.progress {
+        cursor: ew-resize;
+    }
+    input {
+        margin-left: 10px;
+    }
     div{
       margin: 0;
       padding: 0;
@@ -35,21 +35,30 @@ input {
       justify-content: center;
       text-align: center;
     }
-.small {
+/* .small {
   width: 18px;
   height: 18px;
-}
+} */
 .square,
 .circle {
   position: relative;
-  width: 28px;
+  width: 50px;
   height: 28px;
   margin: 1px;
   background-color: rgb(132, 83, 223);
   font-size: 14px;
 }
 
+.car1{
+  background: url('./src/image/car1.png') no-repeat center / cover;
+}
+.car2{
+  background: url('./src/image/car2.png') no-repeat center / cover;
+}
 
+.car3{
+  background: url('./src/image/car3.png') no-repeat center / cover;
+}
 
 .follow-path {
       position: absolute;
@@ -84,7 +93,7 @@ input {
 </head>
 <body>
   <div id="root">
-      <div class="small square el follow-path"></div>
+      <div class="small square el follow-path car2"></div>
       <svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
         viewBox="0 0 750 2900" style="enable-background:new 0 0 750 2900;" xml:space="preserve">
         <style type="text/css">
