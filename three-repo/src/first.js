@@ -5,6 +5,7 @@ import loader from './js/loader/index'
 import addMouseListener from './js/addMouseListener'
 window.THREE = THREE
 require("./js/loader/FBXLoader.js")
+require("script-loader!./js/THREEx.KeyboardState.js")
 require("script-loader!./js/loader/inflate.min.js")
 let fbxLoader = new THREE.FBXLoader();
 var module = {
@@ -20,6 +21,7 @@ var module = {
     var width = window.innerWidth
     var height = window.innerHeight
     this.clock = new THREE.Clock();
+    this.keyboard = new THREEx.KeyboardState();
     // 创建一个场景
     this.scene = new THREE.Scene()
     window.scene = this.scene;
@@ -52,6 +54,7 @@ var module = {
     this.container = document.body;
     // 将渲染器的输出（此处是 canvas 元素）插入到 body
     this.container.appendChild(this.renderer.domElement)
+    this.methods.createGeometry(this.scene)
     // this.scene.add(new THREE.Mesh(new THREE.SphereGeometry(100, 100, 100), new THREE.MeshBasicMaterial(0x0000ff)))
     this.methods.addLight(this.scene)
     this.addListener = addMouseListener(this.scene, this.renderer, this.camera, this.container)
@@ -140,7 +143,6 @@ var module = {
         var delta = self.clock.getDelta();
         // 渲染，即摄像机拍下此刻的场景
         self.renderer.render(self.scene, self.camera)
-        //更新摄像机的位置
         self.orbitControls.update(delta);
         maxers.forEach((item) => {
           item.update(delta);
@@ -157,11 +159,44 @@ var module = {
           gltfMesh_bird.position.y = y
           gltfMesh_bird.position.z = z
         }
+        var moveDistance = 20 * delta;
+        var rotateAngle = Math.PI / 2 * delta;
+        let movingCube = self.scene.children.find(item => item.name === 'mesh_01')
+        if (self.keyboard.pressed("A")) {
+            movingCube.rotation.y += rotateAngle;
+        }
+        if (self.keyboard.pressed("D")) {
+            movingCube.rotation.y += rotateAngle;
+        }
+        if (self.keyboard.pressed("left")) {
+            movingCube.position.x -= moveDistance;
+        }
+        if (self.keyboard.pressed("right")) {
+            movingCube.position.x += moveDistance;
+        }
+        if (self.keyboard.pressed("up")) {
+            movingCube.position.z -= moveDistance;
+        }
+        if (self.keyboard.pressed("down")) {
+            movingCube.position.z += moveDistance;
+        }
 
         requestAnimationFrame(render)
     }
   },
   methods: {
+
+    createGeometry(scene){
+      let geo = new THREE.BoxGeometry(10, 10, 10)
+      let material = new THREE.MeshBasicMaterial(0xffff00)
+      let mesh = new THREE.Mesh(geo, material)
+      mesh.name="mesh_01"
+      mesh.position.x = 0;
+      mesh.position.y = 0;
+      mesh.position.z = 0;
+      scene.add(mesh)
+    },
+
     getPosi(theta, phi){
       // 球体表面的3维向量
       var radius = 100;

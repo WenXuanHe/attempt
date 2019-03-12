@@ -27,7 +27,7 @@ module.exports = smp.wrap({
               use: ['style-loader', 'css-loader']
           },
           {
-            test: /\.inflate\.min\.js$/,
+            test: /\.inflate\.min\.js$|\.THREEx\.KeyboardState\.js$/,
             loader: 'script-loader'
           },
           {
