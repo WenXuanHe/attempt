@@ -13,6 +13,7 @@ module.exports = smp.wrap({
         'test': 'src/index.test.js',
         'hemisphereLight': 'src/hemisphereLight.js',
         'first': 'src/first.js',
+        'periodictable': 'src/periodictable.js',
     },
     output: {
         publicPath: '/dist/',
@@ -27,7 +28,7 @@ module.exports = smp.wrap({
               use: ['style-loader', 'css-loader']
           },
           {
-            test: /\.inflate\.min\.js$|\.THREEx\.KeyboardState\.js$/,
+            test: /\.inflate\.min\.js$|\.THREEx\.KeyboardState\.js$|\.CSS3DRenderer\.js/,
             loader: 'script-loader'
           },
           {
