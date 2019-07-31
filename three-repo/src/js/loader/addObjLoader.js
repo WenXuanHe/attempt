@@ -1,10 +1,11 @@
-import * as THREE from 'three'
-import OBJLoader from 'three-obj-loader'
-
+const THREE = require('three')
+window.THREE = THREE
+require("./OBJLoader.js")
+let objLoader = new THREE.OBJLoader();
 export default (path) => {
   return new Promise(function(resolve) {
-    OBJLoader(THREE)(path, (object) => {
-      resolve(object);
+    objLoader.load(path, (object) => {
+        resolve(object);
     });
   });
 }
