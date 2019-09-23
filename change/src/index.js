@@ -16,30 +16,34 @@ const toCame = (str) => str.replace(/_([a-zA-Z])/, (_, b) => b.toUpperCase())
 // 读取需要修改的源代码内容
 var content = `
 var a = {
-  responce: [{
-    name: 'sdd',
-    first_name: 'he',
-    last_name: 'wenxuan',
-    age: 23,
-    isBoy: true,
-    isBoy1: 'true',
-    component: {
-      a: 23,
-      b: 45
-    }
-  },{
-    name: 'sdd',
-    age: 23,
-    isBoy: true,
-    isBoy1: 'true',
-    component: {
-      a: 23,
-      b: 45
-    }
-  }]
+  responce: {
+    prompts: '',
+    status: 0,
+    message: '',
+    data: [
+      {
+        officialPricePrefix: '指导价：',
+        seriesName: '奥迪A6',
+        officialPrice: '30.80-54.17万',
+        seriesId: 98,
+        imageUrl:
+          'https://p1-dcd.byteimg.com/img/mosaic-legacy/bef30000942d35a1dcc4~tplv-resize:480:0.png',
+        price: '30.80-54.17万',
+      },
+      {
+        officialPricePrefix: '指导价：',
+        seriesName: '奥迪A6',
+        officialPrice: '30.80-54.17万',
+        seriesId: 98,
+        imageUrl:
+          'https://p1-dcd.byteimg.com/img/mosaic-legacy/bef30000942d35a1dcc4~tplv-resize:480:0.png',
+        price: '30.80-54.17万',
+      },
+    ],
+  }
 }
 `
-var resultInteface = {}
+var resultInterface = {}
 // 定义一个 babel 插件，拦截并修改为值的类型
 let visitor = {
   ObjectProperty: {
@@ -69,9 +73,9 @@ let visitor = {
         let code = generate(path.node).code
         const Ikey = `I${toUpperCase(toCame(key))}`
         code = `${code}`.replace(`${key}:`, Ikey).replace(/"/g, `'`)
-        const res = `export inteface ${code}`
-        if(!resultInteface[Ikey]){
-          resultInteface[Ikey] = res
+        const res = `export interface ${code}`
+        if(!resultInterface[Ikey]){
+          resultInterface[Ikey] = res
         }
         node.value.type = "NumericLiteral"
         node.value.value = Ikey
@@ -81,9 +85,9 @@ let visitor = {
         let item = node.value.elements[0]
         const Ikey = `I${toUpperCase(toCame(key))}`
         let itemCode = generate(item).code.replace(`${key}:`, Ikey).replace(/"/g, `'`)
-        const res = `export inteface ${Ikey} ${itemCode}`
-        if(!resultInteface[Ikey]){
-          resultInteface[Ikey] = res
+        const res = `export interface ${Ikey} ${itemCode}`
+        if(!resultInterface[Ikey]){
+          resultInterface[Ikey] = res
         }
         node.value.type = "NumericLiteral"
         node.value.value = `${Ikey}[]`
@@ -100,5 +104,5 @@ let result= babel.transform(content, {
  });
 
  console.warn(transform(`
- ${Object.values(resultInteface).join("\n")}
+ ${Object.values(resultInterface).join("\n")}
  ${result.code.replace('var a = ', '')}`));
